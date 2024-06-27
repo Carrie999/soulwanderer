@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 
 
 
@@ -20,7 +20,7 @@ import Gallery from "react-photo-gallery";
 
 
 
-export default function Home() {
+function Pattern() {
   const searchParams = useSearchParams();
   const name = "/spilt/" + searchParams.get("name")
   // const router = useRouter();
@@ -43,6 +43,7 @@ export default function Home() {
 
 
   return (
+
     <main>
 
       <div className="w-screen h-screen">
@@ -78,5 +79,16 @@ export default function Home() {
 
 
     </main >
+
   );
+}
+
+
+export default function Home() {
+  return (
+    // You could have a loading skeleton as the `fallback` too
+    <Suspense>
+      <Pattern />
+    </Suspense>
+  )
 }

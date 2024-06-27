@@ -85,7 +85,7 @@ export default function Home() {
 
 
   const onSortEnd = ({ oldIndex, newIndex }) => {
-    console.log(items, oldIndex, newIndex, oldIndex / 4)
+    // console.log(items, oldIndex, newIndex, oldIndex / 4)
     let name = category + "/m" + (Math.floor(oldIndex / 4) + 1) + "_" + (oldIndex % 4).toString(2).padStart(2, '0') + ".jpg"
     // router.push({
     //   pathname: '/tile',
