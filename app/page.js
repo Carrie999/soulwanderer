@@ -1,16 +1,59 @@
 "use client";
 
 import Image from "next/image";
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+// import PhotoGallery from './PhotoGallery';
+import Photo from "./Photo";
+import { useState } from "react";
+import arrayMove from "array-move";
+import { arrayMoveImmutable } from 'array-move';
+import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import Gallery from "react-photo-gallery";
+let photos = [];
 
 
-function isMobile() {
+for (let i = 1; i < 49; i++) {
+  photos.push({
+    src: `/spilt/flowers/m${i}_00.jpg`,
+    width: 1,
+    height: 1,
+    title: `flowers_${i}_00.jpg`
+  })
+  photos.push({
+    src: `/spilt/flowers/m${i}_01.jpg`,
+    width: 1,
+    height: 1,
+    title: `flowers_${i}_01.jpg`
+  })
+  photos.push({
+    src: `/spilt/flowers/m${i}_10.jpg`,
+    width: 1,
+    height: 1,
+    title: `flowers_${i}_10.jpg`
+  })
 
-  if (typeof window !== "undefined") {
-    const userAgent = window.navigator.userAgent || window.opera;
-    return /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
-  }
-
+  photos.push({
+    src: `/spilt/flowers/m${i}_11.jpg`,
+    width: 1,
+    height: 1,
+    title: `flowers_${i}_11.jpg`
+  })
 }
+
+
+
+
+
+// function isMobile() {
+
+//   if (typeof window !== "undefined") {
+//     const userAgent = window.navigator.userAgent || window.opera;
+//     return /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+//   }
+
+// }
 
 const GradientButton = () => {
 
@@ -19,8 +62,6 @@ const GradientButton = () => {
   // };
 
   return (
-
-
     <a href="https://apps.apple.com/us/app/floraltile/id6504483514" target="_blank" rel="noopener noreferrer">
       <button className="bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 via-orange-300 to-red-300 text-white font-bold py-4 px-5 rounded-full shadow-lg transform transition duration-300 hover:scale-105 mt-6 mb-6"
         target='_blank'
@@ -31,7 +72,84 @@ const GradientButton = () => {
   );
 };
 
+
+const SortablePhoto = SortableElement(item => <Photo {...item} />);
+const SortableGallery = SortableContainer(({ items }) => (
+  <Gallery photos={items} renderImage={props => <SortablePhoto {...props} />} />
+));
+
 export default function Home() {
+  const [items, setItems] = useState(photos);
+  const router = useRouter();
+  const [category, setCategory] = useState("flowers");
+
+
+  const onSortEnd = ({ oldIndex, newIndex }) => {
+    console.log(items, oldIndex, newIndex, oldIndex / 4)
+    let name = category + "/m" + (Math.floor(oldIndex / 4) + 1) + "_" + (oldIndex % 4).toString(2).padStart(2, '0') + ".jpg"
+    // router.push({
+    //   pathname: '/tile',
+    //   query: { name: category + "/m" + (Math.floor(oldIndex / 4) + 1) + "_" + (oldIndex % 4).toString(2).padStart(2, '0') + ".jpg" }
+    // });
+
+
+    // router.push({
+    //   pathname: '/tile',
+    //   query: { name: 'John', age: 30 }
+    // });
+    window.open(`/tile?name=${name}`, '_blank');
+    // router.push(`/tile?name=${name}`)
+
+
+
+
+    // router.push('/tile' + "?" + category + "/m" + (Math.floor(oldIndex / 4) + 1) + "_" + (oldIndex % 4).toString(2).padStart(2, '0') + ".jpg");
+    setItems(arrayMoveImmutable(items, oldIndex, newIndex));
+  };
+
+
+  const getBackground = (index) => {
+    if (index === category) {
+      return "bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 via-orange-300 to-red-300"
+    } else {
+      return "bg-white-400"
+    }
+
+  }
+
+  const pushCategory = (sum, category) => {
+    let photos = [];
+    for (let i = 1; i < sum; i++) {
+      photos.push({
+        src: `/spilt/${category}/m${i}_00.jpg`,
+        width: 1,
+        height: 1,
+        title: `${category}_${i}_00.jpg`
+      })
+      photos.push({
+        src: `/spilt/${category}/m${i}_01.jpg`,
+        width: 1,
+        height: 1,
+        title: `${category}_${i}_01.jpg`
+      })
+      photos.push({
+        src: `/spilt/${category}/m${i}_10.jpg`,
+        width: 1,
+        height: 1,
+        title: `${category}_${i}_10.jpg`
+      })
+
+      photos.push({
+        src: `/spilt/${category}/m${i}_11.jpg`,
+        width: 1,
+        height: 1,
+        title: `${category}_${i}_11.jpg`
+      })
+    }
+
+    setItems(photos)
+
+  }
 
 
   // useEffect(() => {
@@ -39,134 +157,49 @@ export default function Home() {
   // }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-12 bg-black">
+    <main className="flex min-h-screen flex-col items-center justify-between p-12  bg-black pt-[150px]">
+
+      <Image
+        className="absolute left-[80px] top-[40px] dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert rounded-[20px]"
+        src="/logo1.jpg"
+        alt="pattern tile Logo"
+        width={70}
+        height={70}
+        priority
+      />
+      {/* <Link href="/tile"> */}
+      <p className="absolute left-[180px] top-[50px] text-white mt-2 text-2xl mr-[600px]">FloralTile</p>
+      {/* </Link> */}
+
+      <div className="absolute right-[80px] top-[35px] dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert rounded-[20px]">
+        <GradientButton />
+      </div>
 
 
+      <div className="flex space-x-4">
+        <button className={`${getBackground("flowers")} text-white rounded-full hover:bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 via-orange-300 to-red-300 py-4 px-5`} onClick={() => {
+          pushCategory(49, "flowers")
+          setCategory("flowers")
+        }}>flowers</button>
+        <button className={`${getBackground("darkflowers")} text-white rounded-full hover:bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 via-orange-300 to-red-300 py-4 px-5`} onClick={() => {
+          pushCategory(10, "darkflowers")
+          setCategory("darkflowers")
+        }}>dark flowers</button>
+        <button className={`${getBackground("animals")} text-white rounded-full hover:bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 via-orange-300 to-red-300 py-4 px-5`} onClick={() => {
+          pushCategory(22, "animals")
+          setCategory("animals")
+        }}>animals</button>
+        <button className={`${getBackground("fruits")} text-white rounded-full hover:bg-gradient-to-r from-blue-300 via-purple-300 via-pink-300 via-orange-300 to-red-300 py-4 px-5`} onClick={() => {
+          pushCategory(18, "fruits")
+          setCategory("fruits")
+        }}>fruits</button>
+      </div>
+      <div class="absolute inset-0 -z-20 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]"><div class="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_500px_at_50%_200px,#d5c5ff,transparent)]"></div></div>
 
+      <div style={{ width: '20px', height: '20px' }}></div>
 
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex bg-red" >
-
-
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert rounded-[20px]"
-          src="/logo1.jpg"
-          alt="pattern tile Logo"
-          width={70}
-          height={70}
-          priority
-        />
-
-        {typeof window !== "undefined" && isMobile() ? <p className="relative text-white mt-2 text-2xl mt-[20px]">FloralTile</p> : <p className="relative text-white mt-2 text-2xl mr-[600px]">FloralTile</p>}
-
-        {typeof window !== "undefined" && isMobile() ? <></> : <GradientButton />}
-
-
-
-
-        {/* <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onclick="window.location.href='https://www.baidu.com'">
-          download
-        </button> */}
-
-
-      </div >
-
-      <p className="text-white mt-2 mt-[30px]">Seamless tile patterns generated by AI, such as flowers, fruits, and small animals </p>
-
-
-      <video
-        className="w-full max-w-3xl rounded-lg shadow-lg"
-        style={{ width: '280px' }}
-        controls
-      >
-        <source src="/intro.mp4" type="video/mp4" />
-
-        Your browser does not support the video tag.
-      </video>
-
-
-      {/* <div style={{ width: '20px', height: '20px' }}></div> */}
-      <GradientButton />
-
-      {/* <div style={{ width: '20px', height: '20px' }}></div> */}
-
-      {
-        !isMobile() ? <>
-          <p className="text-white w-[700px] ">
-            can be downloaded as single patterns or full screen patterns for any purpose. There are over 200 types of flower patterns, 80 types of fruits, 40 types of animal patterns, and 600 types of ceramic tile patterns, which are rich in variety and generate clear images. They can be used as wallpapers, murals, fabrics, and any other places you want to use.
-          </p>
-
-
-          <p className="text-transparent bg-clip-text mt-10 mb-5" style={{
-            background: 'linear-gradient(to right, #a0bcf3, #b1afe9, #d7a2da, #e89ccb, #f5b8b0)', WebkitBackgroundClip: "text",
-            color: "transparent"
-          }}>
-            20 Promo Codes for iOS
-          </p>
-
-          <p className="text-white w-[700px] ">FXM77EXR4XPY
-            FN4LFYJ66M6E&nbsp;
-            RFHHLYFWF9HX&nbsp;
-            6R9P3WELA9NF&nbsp;
-            AWX94TA4W6R7&nbsp;
-            69T6PY9NHPRT&nbsp;
-            ANTFKXFPJ4JM&nbsp;
-            R9MEH6L7H7TX&nbsp;
-            K9W4RXPWWWN6&nbsp;
-            NK4993X3WXJJ&nbsp;
-            XY7R6794XT66&nbsp;
-            J3J7PELP3AHW&nbsp;
-            AMPLT7F7AJ9F&nbsp;
-            EYPPALT3FJ3N&nbsp;
-            K66MYX4KJW9X&nbsp;
-            HTRYT49KWJ3W&nbsp;
-            MA6TW4EX3LW4&nbsp;
-            TRTKKHRW9HTW&nbsp;
-            NWX343NHJ93E&nbsp;
-            NMW4JPWAMFJ3&nbsp;
-          </p></> : <>
-          <p className="text-white w-[350px]">
-            can be downloaded as single patterns or full screen patterns for any purpose. There are over 200 types of flower patterns, 80 types of fruits, 40 types of animal patterns, and 600 types of ceramic tile patterns, which are rich in variety and generate clear images. They can be used as wallpapers, murals, fabrics, and any other places you want to use.
-          </p>
-
-
-          <p className="text-transparent bg-clip-text mt-10 mb-5" style={{
-            background: 'linear-gradient(to right, #a0bcf3, #b1afe9, #d7a2da, #e89ccb, #f5b8b0)', WebkitBackgroundClip: "text",
-            color: "transparent"
-          }}>
-            20 Promo Codes for iOS
-          </p>
-
-          <p className="text-white w-[350px] ">FXM77EXR4XPY
-            FN4LFYJ66M6E&nbsp;
-            RFHHLYFWF9HX&nbsp;
-            6R9P3WELA9NF&nbsp;
-            AWX94TA4W6R7&nbsp;
-            69T6PY9NHPRT&nbsp;
-            ANTFKXFPJ4JM&nbsp;
-            R9MEH6L7H7TX&nbsp;
-            K9W4RXPWWWN6&nbsp;
-            NK4993X3WXJJ&nbsp;
-            XY7R6794XT66&nbsp;
-            J3J7PELP3AHW&nbsp;
-            AMPLT7F7AJ9F&nbsp;
-            EYPPALT3FJ3N&nbsp;
-            K66MYX4KJW9X&nbsp;
-            HTRYT49KWJ3W&nbsp;
-            MA6TW4EX3LW4&nbsp;
-            TRTKKHRW9HTW&nbsp;
-            NWX343NHJ93E&nbsp;
-            NMW4JPWAMFJ3&nbsp;
-          </p>
-
-
-
-        </>
-
-
-
-      }
+      {/* <Gallery photos={items} />; */}
+      <SortableGallery items={items} onSortEnd={onSortEnd} axis={"xy"} />
 
 
 
