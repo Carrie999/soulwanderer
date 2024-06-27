@@ -1,8 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation';
-import { useEffect, Suspense } from 'react';
+// import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 
 
@@ -17,16 +17,42 @@ import Gallery from "react-photo-gallery";
 
 
 
+function queryURLParams(url) {
+  let askIn = url.indexOf('?'),
+    wellIn = url.indexOf('#'),
+    askText = '',
+    wellText = '';
+  // #不存在
+  wellIn === -1 ? wellIn = url.length : null;
+  // ?存在
+  askIn >= 0 ? askText = url.substring(askIn + 1, wellIn) : null;
+  wellText = url.substring(wellIn + 1);
+  let result = {};
+  wellText !== '' ? result['HASH'] = wellText : null;
+  if (askText !== "") {
+    let ary = askText.split('&');
+    ary.forEach(item => {
+      let aryText = item.split('=');
+      result[aryText[0]] = aryText[1];
+    })
+  }
+  return result;
+}
 
 
 
-function Pattern() {
-  const searchParams = useSearchParams();
-  const name = "/spilt/" + searchParams.get("name")
+export default function Home() {
+  // const searchParams = useSearchParams();
+
+  let name = ""
+
+  if (typeof window !== "undefined") {
+    name = "/spilt/" + queryURLParams(window.location.href).name
+  }
   // const router = useRouter();
   // const { query } = router;
 
-  console.log(111, name)
+  // console.log(111, name)
 
   // const [items, setItems] = useState(photos);
   // const [category, setCategory] = useState("flowers");
@@ -49,8 +75,8 @@ function Pattern() {
       <div className="w-screen h-screen">
 
 
-        {[1, 2, 3, 4, 5, 6].map((index2) =>
-          <div style={{ display: "flex", gap: 0 }}>
+        {typeof window !== "undefined" && [1, 2, 3, 4, 5, 6].map((index2) =>
+          <div key={index2} style={{ display: "flex", gap: 0 }}>
             {
               [1, 2, 3, 4, 5, 6, 7, 8].map((index) => {
                 // 返回一个处理过的元素
@@ -61,7 +87,7 @@ function Pattern() {
                   width={300}
                   height={300}
                   priority
-                  index={index}
+                  key={index}
                 />
               })
 
@@ -84,11 +110,11 @@ function Pattern() {
 }
 
 
-export default function Home() {
-  return (
-    // You could have a loading skeleton as the `fallback` too
-    <Suspense>
-      <Pattern />
-    </Suspense>
-  )
-}
+// export default function  Home() {
+//   return (
+//     // You could have a loading skeleton as the `fallback` too
+//     <Suspense>
+//       <Pattern />
+//     </Suspense>
+//   )
+// }
