@@ -1,18 +1,18 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 // import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 
 
 
-import { useState } from "react";
-import arrayMove from "array-move";
+// import { useState } from "react";
+// import arrayMove from "array-move";
 
-import { arrayMoveImmutable } from 'array-move';
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import Gallery from "react-photo-gallery";
+// import { arrayMoveImmutable } from 'array-move';
+// import { SortableContainer, SortableElement } from "react-sortable-hoc";
+// import Gallery from "react-photo-gallery";
 
 
 
@@ -72,34 +72,20 @@ export default function Home() {
 
     <main>
 
-      <div className="w-screen h-screen">
-
-
-        {typeof window !== "undefined" && [1, 2, 3, 4, 5, 6].map((index2) =>
-          <div key={index2} style={{ display: "flex", gap: 0 }}>
-            {
-              [1, 2, 3, 4, 5, 6, 7, 8].map((index) => {
-                // 返回一个处理过的元素
-                return <Image
-                  className="dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert rounded-[0px]"
-                  src={name}
-                  alt="pattern tile Logo"
-                  width={300}
-                  height={300}
-                  priority
-                  key={index}
-                />
-              })
-
-            }
-
-          </div>
-        )}
-
-
-
-
-
+      <div className="w-screen h-screen bg-black flex items-center justify-center ">
+        {typeof window !== "undefined" &&
+          (<div className="w-full h-full flex items-center justify-center">
+            <Image
+              className="dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert rounded-[0px] w-full h-auto"
+              src={name}
+              alt="pattern tile Logo"
+              // style={{ width: '100vw', height: 'auto' }}
+              height={816}
+              width={1472}
+              priority
+            />
+          </div>)
+        }
 
       </div>
 
@@ -109,12 +95,3 @@ export default function Home() {
   );
 }
 
-
-// export default function  Home() {
-//   return (
-//     // You could have a loading skeleton as the `fallback` too
-//     <Suspense>
-//       <Pattern />
-//     </Suspense>
-//   )
-// }
